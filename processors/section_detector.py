@@ -7,7 +7,8 @@ SECTION_HEADERS = [
     "skills",
     "projects",
     "certifications",
-    "achievements"
+    "achievements",
+    "involvements"
 ]
 
 text = """
