@@ -1,5 +1,5 @@
-pdfminer.six
-pymupdf
+ollama
+pypdf2  
 requests 
 beautifulsoup4
 playwright 
