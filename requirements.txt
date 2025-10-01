@@ -1,2 +1,14 @@
 pdfminer.six
 pymupdf
+requests 
+beautifulsoup4
+playwright 
+selenium 
+spacy
+transformers 
+torch
+litellm
+python-docx
+transformers
+fastapi
+uvicorn
