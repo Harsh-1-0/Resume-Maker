@@ -1211,8 +1211,12 @@ async def process_pair(
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+
+#---------- skill match and skill gap endpoints  ---------- Harsh
+
 from resume_optimizer_agent import skill_matcher
 from recommendation_agent.recomendation import recommend_for_skills
+from job_recommendation.recommend import search_jobs
 from fastapi import Body
 
 @app.post("/skill_match/")
@@ -1237,16 +1241,22 @@ async def skill_gap(
         return JSONResponse(status_code=500, content={"error": str(e)})
     
 
-@app.post("/jd_agent")
+@app.post("/search_jobs")
+async def job_search(
+    summary : dict = Body(...),
+   
+    ):
+    try:
+        desc = summary.get("job_summary", "")
+        jobs = search_jobs(desc)
+        return JSONResponse(content=jobs)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 @app.get("/")
 def root():
     return {"message": "Resume Maker API is running!"}
-
-
-
-
 
 
 

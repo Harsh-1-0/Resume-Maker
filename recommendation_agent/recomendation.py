@@ -5,7 +5,6 @@ import json
 
 load_dotenv()
 
-import requests
 
 
 
