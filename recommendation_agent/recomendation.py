@@ -7,67 +7,6 @@ load_dotenv()
 
 import requests
 
-import requests
-
-def search_courses(skills):
-    """
-    Search online courses for each skill using RapidAPI's 'Online Courses API'.
-    (https://rapidapi.com/tipsters/api/online-courses15/)
-    
-    Returns a list of course dictionaries with:
-    skill, title, provider, url, and description.
-    """
-    if not skills:
-        return []
-
-    results = []
-    seen = set()
-    per_skill = 3
-
-    RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")  # ✅ consistent env var name
-
-    url = "https://collection-for-coursera-courses.p.rapidapi.com/api/courses/search"  # ✅ full URL
-
-    headers = {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": "collection-for-coursera-courses.p.rapidapi.com"
-    }
-    for skill in skills:
-        if not skill:
-            continue
-
-        try:
-            params = {"query": skill}
-            resp = requests.get(url, headers=headers, params=params, timeout=10)
-            resp.raise_for_status()
-            data = resp.json()
-
-            # The API usually returns a "results" or "courses" list
-            courses = data.get("results") or data.get("courses") or []
-
-            for course in courses[:per_skill]:
-                title = course.get("title") or course.get("name")
-                desc = course.get("description") or ""
-                link = course.get("url") or course.get("link")
-                provider = course.get("source") or course.get("provider") or "Unknown"
-
-                key = (link or title)
-                if not key or key in seen:
-                    continue
-                seen.add(key)
-                results.append({
-                    "skill": skill,
-                    "title": title,
-                    "provider": provider,
-                    "link": link,
-                    "description": desc,
-                })
-
-        except Exception as e:
-            print(f"[WARN] Failed for skill '{skill}': {e}")
-            continue
-
-    return results
 
 
 def web_search(query, provider="google", api_key=None, cx=None, serper_api_key=None):
@@ -151,7 +90,6 @@ def recommend_for_skills(
         raise ValueError("skills must be a list of strings")
 
     # --- Fetch courses (Coursera) ---
-    courses = search_courses(skills)
 
     # --- Web search per skill (targeted for learning + certification content) ---
     web = {}
@@ -188,11 +126,10 @@ def recommend_for_skills(
     # --- Summarize the output ---
     result = {
         "skills": skills,
-        "courses": courses,
         "web": web,
         "summary": {
             "num_skills": len(skills),
-            "num_courses": len(courses),
+
             "num_web_sources": sum(
                 len(v) if isinstance(v, list) else 1 for v in web.values()
             ),
