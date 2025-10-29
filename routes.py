@@ -892,6 +892,10 @@ The JSON should include fields like:
 - experience
 - projects
 - certifications
+- project description
+also for projects include project description, technologies used, github link (if any).
+if something is not there make it as "null" or empty list.
+MUST BE A VALID JSON FORMAT if null comes as output make it as "null".
 
 Resume:
 {resume_text}
@@ -1023,6 +1027,8 @@ def extract_skills_llm(text, max_tokens=512, temperature=0.0):
     prompt = f"""
 You are an expert resume/job description parser. 
 Extract only the skills from the following job description.
+Give detailed summery of the job description which can help identify similar kind of jobs.
+
 
 ⚠️ Important rules:
 - Output must be valid JSON only (no explanations, no extra text). 
@@ -1033,7 +1039,9 @@ Extract only the skills from the following job description.
 Format the output exactly as:
 {{
     "required_skills": ["skill1", "skill2", "skill3"],
-    "soft_skills": ["skillA", "skillB"]
+    "soft_skills": ["skillA", "skillB"],
+    "job_summary": "A brief summary of the job description goes here."
+
 }}
 JD: {text}
 """
@@ -1202,6 +1210,34 @@ async def process_pair(
         return JSONResponse(content={"status": "success", "resume_json": resume_json, "jd_json": jd_json})
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+from resume_optimizer_agent import skill_matcher
+from recommendation_agent.recomendation import recommend_for_skills
+from fastapi import Body
+
+@app.post("/skill_match/")
+async def skill_match(resume_json: dict, jd_json: dict):
+    try:
+        matched_skills = skill_matcher.match_skills(resume_json, jd_json)
+        return JSONResponse(content=matched_skills)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/skill_gap/")
+async def skill_gap(
+    data: dict = Body(...),
+    web_provider="google"
+    ):
+    try:
+        skills = data.get("skills", [])
+        recommendations = recommend_for_skills(skills, web_provider=web_provider)
+        return JSONResponse(content=recommendations)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+    
+
+@app.post("/jd_agent")
 
 
 @app.get("/")

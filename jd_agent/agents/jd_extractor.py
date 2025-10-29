@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from pdfminer.high_level import extract_text
-import docx
+# import docx
 
 def extract_from_url(url):
     resp = requests.get(url,timeout=10)
