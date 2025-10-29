@@ -145,6 +145,3 @@ if __name__ == "__main__":
     out = recommend_for_skills(sample_skills, web_provider="google")
     
     print(json.dumps(out, indent=2))
-   
-
-
