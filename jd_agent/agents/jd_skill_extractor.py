@@ -31,7 +31,8 @@ def extract_skills_llm(text, max_tokens=512, temperature=0.0):
     prompt = f"""
         You are an expert resume/job description parser. 
         Extract only the skills from the following job description.
-
+        Give detailed summery of the job description which can help identify similar kind of jobs.
+        
         ⚠️ Important rules:
         - Output must be valid JSON only (no explanations, no extra text). 
         - Use only keywords (single words or short phrases). 
@@ -41,7 +42,8 @@ def extract_skills_llm(text, max_tokens=512, temperature=0.0):
         Format the output exactly as:
         {{
             "required_skills": ["skill1", "skill2", "skill3"],
-            "soft_skills": ["skillA", "skillB"]
+            "soft_skills": ["skillA", "skillB"],
+            "job_summary": "A brief summary of the job description goes here."
         }}
         JD: {text}
     """

@@ -1,7 +1,16 @@
 fastapi
 uvicorn
 requests
-beautifulsoup4
 pdfminer.six
+docx
 python-multipart
+ollama
+pdfminer
+python-multipart
+pymupdf
+ollama
+pypdf2
+beautifulsoup4
+playwright
+python-dotenv
 jinja2 

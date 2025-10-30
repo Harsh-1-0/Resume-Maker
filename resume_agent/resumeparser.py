@@ -14,6 +14,8 @@ def ats_extractor(resume_text: str):
     - projects
     - certifications
 
+    if something is not there make it as "null" or empty list.
+    
     Resume:
     {resume_text}
     """
