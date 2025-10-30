@@ -159,7 +159,7 @@ latex_template = r"""
 \documentclass[]{resume}
 \usepackage[left=0.6in,top=0.4in,right=0.6in,bottom=0.4in]{geometry}
 \name{ {{ name }} }
-\address{ {{ contact.email }} \\ {{ contact.phone }} }
+\contact{ {{ contact.email }} \\ {{ contact.phone }} }
 
 \begin{document}
 
@@ -169,7 +169,7 @@ latex_template = r"""
 
 \begin{rSection}{Education}
 {% for edu in education %}
-\textbf{{{{ edu.institution }}}} \hfill {{ edu.degree }} \\
+	extbf{ {{ edu.institution }} } \hfill {{ edu.degree }} \\
 CGPA: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }} \\
 {% endfor %}
 \end{rSection}
@@ -190,7 +190,7 @@ CGPA: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }} \\
 
 \begin{rSection}{Certifications}
 {% for c in certifications %}
-- \textbf{{{{ c.name }}}}: {{ c.description }}\\
+- \textbf{ {{ c.name }} }: {{ c.description }}\\
 {% endfor %}
 \end{rSection}
 
