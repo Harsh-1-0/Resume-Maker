@@ -1207,7 +1207,22 @@ async def process_pair(
 
         jd_json = extract_skills_llm(jd_raw)
 
+        # return JSONResponse(content={"status": "success", "resume_json": resume_json, "jd_json": jd_json})
+        # --- Convert all None → "null" strings before returning ---
+        def replace_none_with_string(data):
+            if isinstance(data, dict):
+                return {k: replace_none_with_string(v) for k, v in data.items()}
+            elif isinstance(data, list):
+                return [replace_none_with_string(x) for x in data]
+            elif data is None:
+                return "null"
+            return data
+
+        resume_json = replace_none_with_string(resume_json)
+        jd_json = replace_none_with_string(jd_json)
+
         return JSONResponse(content={"status": "success", "resume_json": resume_json, "jd_json": jd_json})
+
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
