@@ -53,7 +53,7 @@ def extract_skills_llm(text, max_tokens=512, temperature=0.0):
         "temperature": temperature
     }
 
-    resp = requests.post(url, json=data, stream=True)
+    resp = requests.post(url, json=data, stream=True, timeout=6000)
     resp.raise_for_status()
 
     output = ""
