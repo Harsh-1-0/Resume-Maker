@@ -1232,6 +1232,8 @@ async def process_pair(
 from resume_optimizer_agent import skill_matcher
 from recommendation_agent.recomendation import recommend_for_skills
 from job_recommendation.recommend import search_jobs
+from resumeMaker_agent.make_resume import generate_ats_resume
+from fastapi.responses import FileResponse
 from fastapi import Body
 
 @app.post("/skill_match/")
@@ -1268,6 +1270,18 @@ async def job_search(
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+@app.post("/resume")
+async def resume_evaluate(
+    resume_json: dict = Body(...),
+    jd_json: dict = Body(...),
+    matcher: dict = Body(...)
+):
+    try:
+        generate_ats_resume(resume_json, jd_json, matcher)
+        file_path = "./resumeMaker_agent/ATS_Resume.pdf"
+        return FileResponse(file_path, media_type="application/pdf")
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 @app.get("/")
 def root():
