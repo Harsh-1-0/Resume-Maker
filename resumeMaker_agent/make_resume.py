@@ -1,6 +1,6 @@
 import subprocess
-from jinja2 import Template
 import ollama
+from jinja2 import Template
 
 
 # ====== HARD-CODED RESUME JSON ======
