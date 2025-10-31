@@ -106,10 +106,13 @@ def clean_llm_output(text):
 def ats_optimize_section(section_name, text, job_desc):
     prompt = f"""
     You are an expert resume optimizer.
-    Rewrite the following {section_name} section to be ATS-friendly, keyword-rich, and concise.
+    Rewrite the following {section_name} section to be:
+     - Highly ATS-friendly with strong action verbs and relevant keywords.
+    - Include quantifiable metrics (e.g., percentages, time reductions, user counts) if plausible.
+    - Keep it concise and professional, without explanations or notes.
     Return **only** the rewritten professional text.
     Do not include explanations, notes, bullet points, or reasons for your changes.
-    Dont include anything like this "Here is the rewritten Professional Summary section:" while generating.
+    Do not include anything like this "Here is the rewritten Professional Summary section:" while generating.
 
     --- JOB DESCRIPTION ---
     {job_desc}
@@ -191,7 +194,12 @@ latex_template = r"""
 \documentclass{resume}
 
 \name{ {{ name }} }
-\contact{ {{ contact.email }} | {{ contact.phone }} }
+
+\contact{
+    \faEnvelope\ {{ contact.email }} \quad | \quad
+    \faPhone\ {{ contact.phone }}
+}
+
 
 \begin{document}
 
