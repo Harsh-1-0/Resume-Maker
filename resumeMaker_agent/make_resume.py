@@ -1,7 +1,7 @@
 import subprocess
+import re
 from jinja2 import Template
 import ollama
-
 
 # ====== HARD-CODED RESUME JSON ======
 resume_data = {
@@ -11,24 +11,9 @@ resume_data = {
         "phone": "+91 7257912483"
     },
     "education": [
-        {
-            "institution": "Vellore Institute of Technology",
-            "degree": "B.Tech in Computer Science and Engineering",
-            "cgpa": 8.8,
-            "percentage": "null"
-        },
-        {
-            "institution": "Delhi Public School",
-            "degree": "Senior Secondary Education (CBSE)",
-            "cgpa": "null",
-            "percentage": 93.6
-        },
-        {
-            "institution": "Delhi Public School",
-            "degree": "High School Education (CBSE)",
-            "cgpa": "null",
-            "percentage": 95.6
-        }
+        {"institution": "Vellore Institute of Technology", "degree": "B.Tech in Computer Science and Engineering", "cgpa": 8.8, "percentage": "null"},
+        {"institution": "Delhi Public School", "degree": "Senior Secondary Education (CBSE)", "cgpa": "null", "percentage": 93.6},
+        {"institution": "Delhi Public School", "degree": "High School Education (CBSE)", "cgpa": "null", "percentage": 95.6}
     ],
     "skills": {
         "programming_languages": [
@@ -47,7 +32,7 @@ resume_data = {
             "end_date": "July 2025",
             "responsibilities": [
                 "Developed 3+ production-ready modules (React.js, Node.js, REST APIs), deployed to live users.",
-                "Optimized MongoDB queries, reducing data retrieval time by 30% for 10k+ records.",
+                "Optimized MongoDB queries, reducing data retrieval time by 30%.",
                 "Collaborated in a 6-member Agile team, delivering 5+ full-stack features within sprint deadlines."
             ]
         }
@@ -55,11 +40,11 @@ resume_data = {
     "projects": [
         {
             "name": "AutismScope",
-            "description": "Implemented a full-stack web app for Autism Spectrum Disorder prediction, integrating a React.js frontend with a Flask backend, delivering real-time results in under 1 second."
+            "description": "Implemented a full-stack web app for Autism Spectrum Disorder prediction using React.js and Flask, delivering real-time results under 1 second."
         },
         {
             "name": "Nexus",
-            "description": "Built a student-centric platform during a 48-hour hackathon with a team of 3, helping users reconnect lost belongings and match with peers having complementary skills."
+            "description": "Built a student-centric platform during a 48-hour hackathon that reconnects lost belongings using C++ backend logic."
         }
     ],
     "certifications": [
@@ -74,92 +59,139 @@ resume_data = {
     ]
 }
 
-
-# ====== HARD-CODED JOB DESCRIPTION JSON ======
 jd_data = {
     "required_skills": [
-        "C++",
-        "SQL",
-        "HTML/DHTML",
-        "CSS",
-        "Javascript",
-        "Service Oriented Architecture",
-        "Object-Oriented Programming"
+        "C++", "SQL", "HTML/DHTML", "CSS", "Javascript",
+        "Service Oriented Architecture", "Object-Oriented Programming"
     ],
-    "soft_skills": [
-        "Analytical skills",
-        "Problem-solving skills",
-        "Communication skills",
-        "Team player",
-        "Independent",
-        "Out-of-the-box thinker",
-        "Self-learner"
-    ],
-    "job_summary": "Associate Developer role at Sapiens, focusing on software development and Agile/Scrum team collaboration."
+    "job_summary": "Associate Developer role at Sapiens, focusing on software development and Agile/Scrum collaboration."
 }
 
-
-# ====== HARD-CODED MATCHED SKILL SUMMARY ======
+# ====== HARD-CODED MATCHED SKILLS ======
 matched_json = {
     'matched_required_skills': ['SQL', 'HTML/DHTML', 'CSS', 'JavaScript', 'Data Structures', 'Algorithms'],
-    'unmatched_required_skills': ['C++', 'Service Oriented Architecture', 'Object-Oriented Programming']
+    'projects_matches': {'Nexus': ['HTML/DHTML', 'CSS', 'JavaScript']},
+    'certifications_matches': []
 }
 
+# ====== LATEX ESCAPE CLEANER ======
+def clean_for_latex(text):
+    replacements = {
+        "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#",
+        "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}", "–": "-", "—": "-",
+        "“": '"', "”": '"', "’": "'", "•": "-", "…": "..."
+    }
+    for k, v in replacements.items():
+        text = text.replace(k, v)
+    return text
 
-# ====== FUNCTION TO OPTIMIZE CONTENT VIA LLAMA3 ======
+# ====== CLEAN LLM OUTPUT ======
+def clean_llm_output(text):
+    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.*?)\*', r'\1', text)
+    text = re.sub(r'`(.*?)`', r'\1', text)
+    text = re.sub(r"(?i)here.?s a rewritten.*?:", "", text)
+    text = re.sub(r"(?i)here.?s the optimized.*?:", "", text)
+    text = re.sub(r"(?i)this rewritten.*", "", text)
+    text = re.sub(r"(?i)note:.*", "", text)
+    text = re.sub(r"(?i)i made the following changes.*", "", text, flags=re.DOTALL)
+    text = re.sub(r"(?i)key changes.*", "", text, flags=re.DOTALL)
+    text = re.split(r"(?i)(\n\s*\*|\n\s*-\s|Key points:|Key changes:)", text)[0]
+    text = clean_for_latex(text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+# ====== LLM OPTIMIZATION FUNCTION ======
 def ats_optimize_section(section_name, text, job_desc):
     prompt = f"""
     You are an expert resume optimizer.
-    Rewrite the following {section_name} content to be ATS-friendly, 
-    keyword-rich, concise, and tailored for this job description.
-    Maintain a professional and impactful tone.
+    Rewrite the following {section_name} section to be ATS-friendly, keyword-rich, and concise.
+    Return **only** the rewritten professional text.
+    Do not include explanations, notes, bullet points, or reasons for your changes.
+    Dont include anything like this "Here is the rewritten Professional Summary section:" while generating.
 
     --- JOB DESCRIPTION ---
     {job_desc}
-
-    --- CONTENT TO OPTIMIZE ---
+    --- CONTENT ---
     {text}
-
-    Return only the improved version.
     """
-
     response = ollama.chat(
         model="llama3",
         messages=[{"role": "user", "content": prompt}]
     )
+    return clean_llm_output(response["message"]["content"].strip())
 
-    return response['message']['content'].strip()
-
-
-# ====== GENERATE CONTEXT FROM JD ======
+# ====== JOB DESCRIPTION TEXT ======
 jd_text = jd_data["job_summary"] + " " + " ".join(jd_data["required_skills"])
 
+# ====== FILTER SKILLS, PROJECTS, AND CERTIFICATIONS ======
 
-# ====== OPTIMIZE EACH SECTION ======
+# Keep only matched skills
+filtered_skills = []
+for s in resume_data["skills"]["programming_languages"]:
+    if any(skill.lower() in s.lower() for skill in matched_json["matched_required_skills"]):
+        filtered_skills.append(s)
+if not filtered_skills:
+    filtered_skills = resume_data["skills"]["programming_languages"]
+
+# Keep only matched projects
+filtered_projects = []
+for proj in resume_data["projects"]:
+    if proj["name"] in matched_json["projects_matches"]:
+        filtered_projects.append(proj)
+if not filtered_projects:
+    filtered_projects = resume_data["projects"]
+
+# Keep only certifications that match data structures or algorithms
+filtered_certs = []
+for cert in resume_data["certifications"]:
+    if any(c.lower() in cert["name"].lower() or c.lower() in cert["description"].lower()
+           for c in matched_json["certifications_matches"]):
+        filtered_certs.append(cert)
+if not filtered_certs:
+    filtered_certs = resume_data["certifications"]
+
+# ====== SECTIONS ======
 summary_text = ats_optimize_section(
     "Professional Summary",
     "Aspiring software engineer with experience in full-stack and machine learning projects, seeking to contribute to scalable software solutions.",
     jd_text
 )
 
-exp_text = "\n".join(
-    f"{exp['role']} at {exp['company']} ({exp['start_date']} - {exp['end_date']}): "
-    + ats_optimize_section("Experience", " ".join(exp['responsibilities']), jd_text)
-    for exp in resume_data["experience"]
-)
+# Experience
+exp_entries = []
+for exp in resume_data["experience"]:
+    exp_points = "\\\\\n".join([f"-- {clean_for_latex(r)}" for r in exp["responsibilities"]])
+    section_text = (
+        f"\\textbf{{{clean_for_latex(exp['role'])}}} at {clean_for_latex(exp['company'])} "
+        f"\\hfill ({exp['start_date']} -- {exp['end_date']})\\\\\n{exp_points}\n"
+    )
+    exp_entries.append(section_text)
+exp_text = "\n\n".join(exp_entries)
 
-projects_text = "\n".join(
-    f"{proj['name']}: " + ats_optimize_section("Project", proj["description"], jd_text)
-    for proj in resume_data["projects"]
-)
+# Projects
+proj_entries = []
+for proj in filtered_projects:
+    proj_entries.append(
+        f"\\textbf{{{clean_for_latex(proj['name'])}}}: {clean_for_latex(proj['description'])}"
+    )
+projects_text = "\\\\[4pt]\n".join(proj_entries)
 
+# Certifications
+cert_entries = []
+for cert in filtered_certs:
+    cert_entries.append(
+        f"\\textbf{{{clean_for_latex(cert['name'])}}}: {clean_for_latex(cert['description'])}\\\\"
+    )
+certifications_text = "\n".join(cert_entries)
 
-# ====== LATEX TEMPLATE (Jake’s Resume Style) ======
+# ====== LATEX TEMPLATE ======
 latex_template = r"""
-\documentclass[]{resume}
-\usepackage[left=0.6in,top=0.4in,right=0.6in,bottom=0.4in]{geometry}
+\documentclass{resume}
+
 \name{ {{ name }} }
-\contact{ {{ contact.email }} \\ {{ contact.phone }} }
+\contact{ {{ contact.email }} | {{ contact.phone }} }
 
 \begin{document}
 
@@ -169,8 +201,8 @@ latex_template = r"""
 
 \begin{rSection}{Education}
 {% for edu in education %}
-	extbf{ {{ edu.institution }} } \hfill {{ edu.degree }} \\
-CGPA: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }} \\
+\textbf{ {{ edu.institution }} } \hfill {{ edu.degree }}\\
+CGPA / Percentage: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }}\\[6pt]
 {% endfor %}
 \end{rSection}
 
@@ -183,22 +215,19 @@ CGPA: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }} \\
 \end{rSection}
 
 \begin{rSection}{Skills}
-{% for s in skills.programming_languages %}
-- {{ s }}\\
+{% for s in skills %}
+{{ s | replace('%', '\%') | replace('&', '\&') }}\\
 {% endfor %}
 \end{rSection}
 
 \begin{rSection}{Certifications}
-{% for c in certifications %}
-- \textbf{ {{ c.name }} }: {{ c.description }}\\
-{% endfor %}
+{{ certifications }}
 \end{rSection}
 
 \end{document}
 """
 
-
-# ====== RENDER THE FINAL RESUME ======
+# ====== RENDER LATEX ======
 template = Template(latex_template)
 rendered_resume = template.render(
     name=resume_data["name"],
@@ -206,14 +235,21 @@ rendered_resume = template.render(
     education=resume_data["education"],
     experience=exp_text,
     projects=projects_text,
-    skills=resume_data["skills"],
-    certifications=resume_data["certifications"],
-    summary=summary_text,
+    skills=filtered_skills,
+    certifications=certifications_text,
+    summary=summary_text
 )
 
-
-# ====== SAVE TO .TEX FILE ======
+# ====== SAVE TEX FILE ======
 with open("ATS_Resume.tex", "w", encoding="utf-8") as f:
     f.write(rendered_resume)
 
-print("✅ ATS-friendly resume (ATS_Resume.tex) generated successfully!")
+print("✅ LaTeX file generated successfully!")
+
+# ====== COMPILE TO PDF ======
+try:
+    subprocess.run(["pdflatex", "-interaction=nonstopmode", "ATS_Resume.tex"], check=True)
+    subprocess.run(["pdflatex", "-interaction=nonstopmode", "ATS_Resume.tex"], check=True)
+    print("🎉 PDF generated successfully: ATS_Resume.pdf")
+except subprocess.CalledProcessError:
+    print("❌ Error while generating PDF. Check LaTeX logs.")
