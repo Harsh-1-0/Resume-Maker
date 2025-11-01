@@ -1,13 +1,9 @@
 import subprocess
-<<<<<<< HEAD
-import ollama
-from jinja2 import Template
-=======
+
 import re
 from jinja2 import Template
 import ollama
 import os
->>>>>>> 3064048102c1aa36f79ab70702860ea78fb5558a
 
 def generate_ats_resume(resume_data, jd_data, matched_json, output_pdf="ATS_Resume.pdf"):
     """Generates an ATS-optimized PDF resume using Ollama and LaTeX."""

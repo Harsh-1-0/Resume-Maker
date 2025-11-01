@@ -270,58 +270,29 @@ resume = {"resume_json": {
   }
 }
 
-jd = {
-     "jd_json": {
+jd={"jd_json": {
     "required_skills": [
+      "software development",
+      "large codebases",
+      "open-source projects",
       "C++",
-      "SQL",
-      "HTML/DHTML",
-      "CSS",
+      "Java",
       "JavaScript",
-      "Service Oriented Architecture",
-      "Web Services/SOAP",
-      "Object-Oriented Programming",
-      "Data Structures",
-      "Algorithms"
+      "algorithms",
+      "data structures",
+      "cryptography",
+      "P2P networks",
+      "bitcoin-like blockchains",
+      "concurrency",
+      "multithreaded code"
     ],
     "soft_skills": [
-      "Communication skills",
-      "Analytical skills",
-      "Problem-solving skills",
-      "Team player",
-      "Independent",
-      "Out-of-the-box thinker",
-      "Self-learner",
-      "Passion for process automation and software quality"
-    ]
+      "communication",
+      "problem-solving",
+      "teamwork"
+    ],
+    "job_summary": "Blockchain developer required to design, implement, and support a distributed blockchain-based network for an institutional-grade infrastructure provider."
   }
-}
-
-jd = {
-  "jd_json": {
-    "required_skills": [
-      "C++",
-      "SQL",
-      "HTML/DHTML",
-      "CSS",
-      "JavaScript",
-      "Service Oriented Architecture",
-      "Web Services/SOAP",
-      "Object-Oriented Programming",
-      "Data Structures",
-      "Algorithms"
-    ],
-    "soft_skills": [
-      "Communication skills",
-      "Analytical skills",
-      "Problem-solving skills",
-      "Team player",
-      "Independent",
-      "Out-of-the-box thinker",
-      "Self-learner",
-      "Passion for process automation and software quality"
-]
-   }
 }
 
 if __name__ == "__main__":
