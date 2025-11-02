@@ -21,80 +21,246 @@ def generate_ats_resume(resume_data, jd_data, matched_json, output_pdf_name="ATS
     pdf_path = os.path.join(agent_dir, output_pdf_name)
 
     # ====== LATEX CLEANERS ======
+    # def clean_for_latex(text):
+    #     if text is None:
+    #         return ""
+    #     text = str(text)
+    #     replacements = {
+    #         "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#",
+    #         "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}",
+    #         "^": r"\textasciicircum{}", "–": "-", "—": "-",
+    #         "“": '"', "”": '"', "’": "'", "•": "-", "…": "..."
+    #     }
+    #     for k, v in replacements.items():
+    #         text = text.replace(k, v)
+    #     # collapse excessive whitespace
+    #     return re.sub(r'\s+', ' ', text).strip()
+
+    # def clean_llm_output(text):
+    #     if not text:
+    #         return ""
+    #     text = str(text)
+    #     # remove common markdown/bullets and helper phrases
+    #     text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
+    #     text = re.sub(r'\*(.*?)\*', r'\1', text)
+    #     text = re.sub(r'`(.*?)`', r'\1', text)
+    #     text = re.sub(r"(?i)here('?s| is) (a )?rewritten.*?:", "", text)
+    #     text = re.sub(r"(?i)here('?s| is) the optimized.*?:", "", text)
+    #     text = re.sub(r"(?i)this rewritten.*", "", text)
+    #     text = re.sub(r"(?i)note:.*", "", text)
+    #     text = re.sub(r"(?i)i made the following changes.*", "", text, flags=re.DOTALL)
+    #     # take first paragraph up to common separators to avoid long trailing notes
+    #     parts = re.split(r"(?i)(Key points:|Key changes:|\n\s*\*|\n\s*-\s)", text)
+    #     if parts:
+    #         text = parts[0]
+    #     text = clean_for_latex(text)
+    #     return text
+
+
+
     def clean_for_latex(text):
+        """
+        Make text safe for direct insertion into LaTeX:
+        - ensure it's a Python string, replace literal backslash escapes like '\n' with real newlines
+        - remove/escape backslashes so LaTeX doesn't see them as macros
+        - escape LaTeX special characters
+        - collapse repeated whitespace into single spaces or single/newline where appropriate
+        """
         if text is None:
             return ""
-        text = str(text)
+        # ensure string
+        s = str(text)
+
+        # If the LLM returned a JSON-escaped string (contains literal \n, \t etc), unescape common escapes:
+        # Convert literal backslash-letter sequences into actual characters where safe:
+        s = s.replace("\\r\\n", "\n").replace("\\n", "\n").replace("\\r", "\n").replace("\\t", " ")
+
+        # Remove any remaining backslash characters (they are dangerous for LaTeX).
+        # We replace a single backslash with a space to avoid joining words.
+        s = s.replace("\\", " ")
+
+        # Replace / collapse multiple newlines -> single newline; then trim spaces at line ends
+        s = re.sub(r'\n\s*\n+', '\n\n', s)          # keep at most one blank line between paragraphs
+        s = "\n".join([ln.rstrip() for ln in s.splitlines()])
+
+        # Escape LaTeX special characters (keep order stable)
         replacements = {
-            "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#",
-            "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}",
-            "^": r"\textasciicircum{}", "–": "-", "—": "-",
-            "“": '"', "”": '"', "’": "'", "•": "-", "…": "..."
+            "&": r"\&",
+            "%": r"\%",
+            "$": r"\$",
+            "#": r"\#",
+            "_": r"\_",
+            "{": r"\{",
+            "}": r"\}",
+            "~": r"\textasciitilde{}",
+            "^": r"\textasciicircum{}",
+            "–": "-",  # replace en-dash with normal dash
+            "—": "-",
+            "“": '"',
+            "”": '"',
+            "’": "'",
+            "•": "-", 
+            "…": "..."
         }
         for k, v in replacements.items():
-            text = text.replace(k, v)
-        # collapse excessive whitespace
-        return re.sub(r'\s+', ' ', text).strip()
+            s = s.replace(k, v)
+
+        # Collapse many spaces into one (but preserve newlines)
+        s = "\n".join([re.sub(r'[ \t]{2,}', ' ', ln) for ln in s.splitlines()])
+
+        # Finally strip leading/trailing whitespace
+        s = s.strip()
+
+        return s
+
 
     def clean_llm_output(text):
+        """
+        Sanitize LLM output:
+        - remove markdown markers and typical LLM scaffolding text
+        - extract only the first useful paragraph
+        - then run through clean_for_latex
+        """
         if not text:
             return ""
-        text = str(text)
-        # remove common markdown/bullets and helper phrases
-        text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
-        text = re.sub(r'\*(.*?)\*', r'\1', text)
-        text = re.sub(r'`(.*?)`', r'\1', text)
-        text = re.sub(r"(?i)here('?s| is) (a )?rewritten.*?:", "", text)
-        text = re.sub(r"(?i)here('?s| is) the optimized.*?:", "", text)
-        text = re.sub(r"(?i)this rewritten.*", "", text)
-        text = re.sub(r"(?i)note:.*", "", text)
-        text = re.sub(r"(?i)i made the following changes.*", "", text, flags=re.DOTALL)
-        # take first paragraph up to common separators to avoid long trailing notes
-        parts = re.split(r"(?i)(Key points:|Key changes:|\n\s*\*|\n\s*-\s)", text)
-        if parts:
-            text = parts[0]
-        text = clean_for_latex(text)
-        return text
 
+        s = str(text)
+
+        # If the model returned JSON-like object (stringified), remove wrapping quotes if present
+        if s.startswith('"') and s.endswith('"'):
+            s = s[1:-1]
+
+        # Remove common markdown bold/italic/backticks
+        s = re.sub(r'\*\*(.*?)\*\*', r'\1', s, flags=re.S)
+        s = re.sub(r'\*(.*?)\*', r'\1', s, flags=re.S)
+        s = re.sub(r'`(.*?)`', r'\1', s, flags=re.S)
+
+        # Remove "Here is the rewritten..." style prefixes (case-insensitive)
+        s = re.sub(r"(?is)here('?s| is) (the )?rewritten.*?:", "", s)
+        s = re.sub(r"(?is)here('?s| is) the optimized.*?:", "", s)
+        s = re.sub(r"(?is)this rewritten.*", "", s)
+        s = re.sub(r"(?is)note:.*", "", s)
+        s = re.sub(r"(?is)key changes:.*", "", s, flags=re.S)
+
+        # If there are bullet lists, take the first paragraph before the bullets
+        # or stop at common separators to avoid appended explanations
+        parts = re.split(r"(?i)(Key points:|Key changes:|\n\s*[-*•]\s|\n\s*\d+\.\s)", s, maxsplit=1)
+        if parts:
+            s = parts[0]
+
+        # Unescape common JSON escaped newlines if still present
+        s = s.replace("\\n", "\n").replace("\\r", "\n").replace("\\t", " ")
+
+        # Now pass through LaTeX-safe cleaning
+        return clean_for_latex(s)
+
+
+#     def ats_optimize_section(section_name, text, job_desc):
+#         """
+#         Call to Ollama to rewrite a given section for ATS. Kept simple.
+#         If Ollama fails, return the input `text` (cleaned).
+#         """
+#         try:
+#             prompt = f"""
+# You are an expert resume optimizer.
+# Rewrite the following {section_name} section to be:
+#  - Highly ATS-friendly with strong action verbs and relevant keywords.
+#  - Include quantifiable metrics (if plausible).
+#  - Keep it concise and professional.
+# Return only the rewritten professional text (no explanations).
+# Resume section:
+# {text}
+
+# Job / JD:
+# {job_desc}
+# """
+#             response = ollama.chat(
+#                 model="llama3",
+#                 messages=[{"role": "user", "content": prompt}],
+#             )
+#             content = None
+#             if isinstance(response, dict):
+#                 # Ollama Python client tends to return dict with message.content
+#                 msg = response.get("message") or response.get("content")
+#                 if isinstance(msg, dict):
+#                     content = msg.get("content")
+#                 elif isinstance(msg, str):
+#                     content = msg
+#             if content is None:
+#                 # fallback to str()
+#                 content = str(response)
+#             return clean_llm_output(content)
+#         except Exception as e:
+#             # if LLM fails, return cleaned original text so generation continues
+#             print("⚠️ Ollama ATS optimization failed:", e)
+#             return clean_for_latex(text)
+    
     def ats_optimize_section(section_name, text, job_desc):
         """
-        Call to Ollama to rewrite a given section for ATS. Kept simple.
-        If Ollama fails, return the input `text` (cleaned).
+        Call Ollama to rewrite a given section for ATS.
+        Ensures only the assistant's text content is extracted — never raw metadata.
         """
         try:
             prompt = f"""
-You are an expert resume optimizer.
-Rewrite the following {section_name} section to be:
- - Highly ATS-friendly with strong action verbs and relevant keywords.
- - Include quantifiable metrics (if plausible).
- - Keep it concise and professional.
-Return only the rewritten professional text (no explanations).
-Resume section:
-{text}
+    You are an expert resume optimizer.
+    Rewrite the following {section_name} section to be:
+    - Highly ATS-friendly with strong action verbs and relevant keywords.
+    - Include quantifiable metrics (if plausible).
+    - Keep it concise and professional.
+    Return only the rewritten professional text (no explanations).
+    Resume section:
+    {text}
 
-Job / JD:
-{job_desc}
-"""
+    Job / JD:
+    {job_desc}
+    """
             response = ollama.chat(
                 model="llama3",
                 messages=[{"role": "user", "content": prompt}],
             )
+
+            # Handle different response shapes
             content = None
+
+            # Case 1: Ollama returns dict-like
             if isinstance(response, dict):
-                # Ollama Python client tends to return dict with message.content
                 msg = response.get("message") or response.get("content")
                 if isinstance(msg, dict):
                     content = msg.get("content")
                 elif isinstance(msg, str):
                     content = msg
-            if content is None:
-                # fallback to str()
-                content = str(response)
+
+            # Case 2: Ollama returns object (typical with `ollama` Python client)
+            elif hasattr(response, "message"):
+                msg = getattr(response, "message", None)
+                if isinstance(msg, dict):
+                    content = msg.get("content")
+                elif hasattr(msg, "content"):
+                    content = msg.content
+                elif isinstance(msg, str):
+                    content = msg
+            elif hasattr(response, "content"):
+                content = response.content
+
+            # Final safety: ensure we only keep the model text, not the metadata
+            if not content:
+                # Try textual representation but extract only assistant’s message if present
+                textified = str(response)
+                # Use regex to isolate “content='…'” part if present
+                match = re.search(r"content='(.*?)'", textified, re.DOTALL)
+                if match:
+                    content = match.group(1)
+                else:
+                    content = textified  # last resort
+
+            # Clean the extracted text
             return clean_llm_output(content)
+
         except Exception as e:
-            # if LLM fails, return cleaned original text so generation continues
             print("⚠️ Ollama ATS optimization failed:", e)
+            # fallback to cleaned original text so generation continues
             return clean_for_latex(text)
+
 
     # ====== JOB DESCRIPTION TEXT ======
     # Create an aggregated JD_text for LLM prompt
