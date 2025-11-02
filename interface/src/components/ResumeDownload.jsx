@@ -91,7 +91,7 @@ export default function ResumeDownload({ onBack = () => {} }) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-[#39ff14]">Your Enhanced Resume</h1>
+        <h1 className="text-3xl font-bold text-blue-600">Your Enhanced Resume</h1>
         <div className="flex gap-2">
           <button onClick={onBack} className="px-3 py-1 rounded bg-white/5">Back</button>
           <button onClick={handleDownload} className="px-3 py-1 rounded bg-[#39ff14] text-black font-semibold">Download</button>

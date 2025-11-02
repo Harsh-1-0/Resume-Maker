@@ -77,51 +77,47 @@ import SkillGap from "./components/SkillGap";
 import JobSearch from "./components/JobSearch";
 
 export default function App() {
-  // simple internal routing (no react-router)
-  const [page, setPage] = useState("home"); // 'home' | 'resume' | 'skillgap' | 'jobsearch'
+  const [page, setPage] = useState("home");
+
+  const NavButton = ({ name, label }) => (
+    <button
+      onClick={() => setPage(name)}
+      className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+        page === name
+          ? "bg-blue-600 text-white shadow-sm"
+          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      }`}
+    >
+      {label}
+    </button>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* top-nav */}
-      <header className="w-full p-4 flex items-center justify-between border-b border-gray-800">
-        <div className="flex items-center gap-3">
-          <div className="text-2xl font-bold text-[#39ff14]">Resume Maker</div>
-          <div className="text-sm text-gray-400">Improve · Match · Apply</div>
+    <div className="min-h-screen bg-[#f8f9fa] text-gray-900 font-sans">
+      <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
+          <div className="text-xl font-semibold tracking-tight text-gray-800">
+            Resume<span className="text-blue-600">MAKER</span>
+          </div>
+          <nav className="flex items-center gap-2">
+            <NavButton name="home" label="Home" />
+            <NavButton name="skillgap" label="Skill Gap" />
+            <NavButton name="jobsearch" label="Job Search" />
+            <NavButton name="resume" label="Resume" />
+          </nav>
         </div>
-        <nav className="flex items-center gap-3">
-          <button
-            onClick={() => setPage("home")}
-            className={`px-3 py-1 rounded ${page === "home" ? "bg-white/10" : "hover:bg-white/5"}`}
-          >
-            Home
-          </button>
-          <button
-            onClick={() => setPage("skillgap")}
-            className={`px-3 py-1 rounded ${page === "skillgap" ? "bg-white/10" : "hover:bg-white/5"}`}
-          >
-            Skill Gap
-          </button>
-          <button
-            onClick={() => setPage("jobsearch")}
-            className={`px-3 py-1 rounded ${page === "jobsearch" ? "bg-white/10" : "hover:bg-white/5"}`}
-          >
-            Job Search
-          </button>
-          <button
-            onClick={() => setPage("resume")}
-            className={`px-3 py-1 rounded ${page === "resume" ? "bg-white/10" : "hover:bg-white/5"}`}
-          >
-            Resume
-          </button>
-        </nav>
       </header>
 
-      <main className="p-6">
+      <main className="max-w-6xl mx-auto px-4 py-10">
         {page === "home" && <Home onNavigate={setPage} />}
         {page === "resume" && <ResumeDownload onBack={() => setPage("home")} />}
         {page === "skillgap" && <SkillGap onBack={() => setPage("home")} />}
         {page === "jobsearch" && <JobSearch onBack={() => setPage("home")} />}
       </main>
+
+      <footer className="mt-10 text-center text-sm text-gray-500 py-6 border-t border-gray-200">
+       
+      </footer>
     </div>
   );
 }
