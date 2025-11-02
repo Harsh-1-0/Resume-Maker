@@ -1,16 +1,23 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.31)  31 OCT 2025 23:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.11.2)  2 NOV 2025 19:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./ATS_Resume.tex
-(ATS_Resume.tex
+**"C:/Users/HARSH ASUS TUF-A15/Desktop/Resume-Maker/resumeMaker_agent/ATS_Resum
+e.tex"
+
+(C:/Users/HARSH ASUS TUF-A15/Desktop/Resume-Maker/resumeMaker_agent/ATS_Resume.
+tex
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-10-09>
 (resume.cls
 Document Class: resume 2021/03/21 Resume Class
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/base\artic
+le.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
+
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/base\size1
+0.clo
 File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count275
@@ -25,17 +32,21 @@ File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip50
 \bibindent=\dimen148
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/geometry\g
+eometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/graphics\k
+eyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks17
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/iftex\if
+vtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/iftex\if
+tex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 ))
 \Gm@cnth=\count283
@@ -51,8 +62,10 @@ Package: iftex 2024/12/12 v1.0g TeX engine tests
 \Gm@layoutvoffset=\dimen156
 \Gm@dimlist=\toks18
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/geometry\g
+eometry.cfg))
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\t
+itlesec.sty
 Package: titlesec 2025/01/04 v2.17 Sectioning titles
 \ttl@box=\box53
 \beforetitleunit=\skip51
@@ -64,7 +77,8 @@ Package: titlesec 2025/01/04 v2.17 Sectioning titles
 \titlewidthlast=\dimen160
 \titlewidthfirst=\dimen161
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\e
+numitem.sty
 Package: enumitem 2025/02/06 v3.11 Customized lists
 \labelindent=\skip53
 \enit@outerparindent=\dimen162
@@ -73,75 +87,93 @@ Package: enumitem 2025/02/06 v3.11 Customized lists
 \enit@count@id=\count286
 \enitdp@description=\count287
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthe
+n.sty
 Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\h
+yperref.sty
 Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\
+kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefinekey
-s.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/kvdefine
+keys\kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/pdfescap
+e\pdfescape.sty
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\
+ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.st
-y
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcm
+ds\pdftexcmds.sty
 Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/infwarer
+r\infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-)) (C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+))
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hy
+color.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\n
+ameref.sty
 Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/refcount\r
+efcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettitles
-tring.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/gettitle
+string\gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\
+kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
 \c@section@level=\count288
-) (C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+)
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\e
+toolbox.sty
 Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count289
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/stringen
+c\stringenc.sty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
 \@linkdim=\dimen163
 \Hy@linkcounter=\count290
 \Hy@pagecounter=\count291
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\p
+d1enc.def
 File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\
+intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
 \Hy@SavedSpaceFactor=\count292
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\p
+uenc.def
 File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
@@ -155,18 +187,20 @@ Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4462.
 \c@Hy@tempcnt=\count293
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/url\url.st
+y
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4801.
 \XeTeXLinkMargin=\dimen164
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/bitset\b
+itset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc.st
-y
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/bigintca
+lc\bigintcalc.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
@@ -185,17 +219,19 @@ Package hyperref Info: PDF/A mode OFF on input line 6108.
 \c@Hfootnote=\count297
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
- (C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\h
+pdftex.def
 File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
 \Fld@listcount=\count298
 \c@bookmark@seq@number=\count299
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfilech
-eck.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilec
+heck\rerunfilecheck.sty
 Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquecoun
-ter.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/uniqueco
+unter\uniquecounter.sty
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
@@ -203,23 +239,28 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip54
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\fontawesome.st
-y
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/fontawesom
+e\fontawesome.sty
 Package: fontawesome 2016/05/15 v4.6.3.1 font awesome icons
- (C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifxetex.sty
+
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/iftex\if
+xetex.sty
 Package: ifxetex 2019/10/25 v0.7 ifxetex legacy package. Use iftex instead.
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifluatex.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/generic/iftex\if
+luatex.sty
 Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\fontawesomesym
-bols-generic.tex)
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\fontawesomesym
-bols-pdftex.tex))
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/fontawesom
+e\fontawesomesymbols-generic.tex)
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/fontawesom
+e\fontawesomesymbols-pdftex.tex))
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabu
+larx.sty
 Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/tools\arra
+y.sty
 Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
 \col@sep=\dimen167
 \ar@mcellbox=\box55
@@ -237,7 +278,8 @@ Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
 \TX@cols=\count300
 \TX@ftn=\toks22
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol.sty
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/tools\mult
+icol.sty
 Package: multicol 2025/05/25 v2.0a multicolumn formatting (FMi)
 \c@tracingmulticols=\count301
 \mult@box=\box57
@@ -325,12 +367,12 @@ If that doesn't work, type  X <return>  to quit.
 LaTeX Font Info:    Trying to load font information for U+fontawesometwo on inp
 ut line 9.
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\ufontawesometw
-o.fd
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/fontawesom
+e\ufontawesometwo.fd
 File: ufontawesometwo.fd 2016/05/22 Font definitions for U/fontawesometwo.
 )
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex
-.def
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\
+l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count312
 ) (ATS_Resume.aux)
@@ -389,20 +431,27 @@ LaTeX Font Info:    ... okay on input line 11.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/graphics\c
+olor.sty
 Package: color 2025/01/14 v1.3e Standard LaTeX Color (DPC)
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/graphics-c
+fg\color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 149.
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/graphics-d
+ef\pdftex.def
 File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 
-(C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count313
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/context/base/mki
+i\supp-pdf.mkii
+! Interruption.
+l.2 
+    %D   [       file=supp-pdf,
+? cratchcounter=\count313
 \scratchdimen=\dimen183
 \scratchbox=\box103
 \nofMPsegments=\count314
@@ -413,8 +462,9 @@ File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 \MPnumerator=\count317
 \makeMPintoPDFobject=\count318
 \everyMPtoPDFconversion=\toks24
-)) (C:\Users\hp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
-)
+))
+(C:\Users\HARSH ASUS TUF-A15\AppData\Local\Programs\MiKTeX\tex/latex/graphics\m
+athcolor.ltx))
 Package hyperref Info: Link coloring ON on input line 11.
  (ATS_Resume.out) (ATS_Resume.out)
 \@outlinefile=\write3
@@ -512,9 +562,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 51--53
 
 [1
 
-{C:/Users/hp/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/hp/AppD
-ata/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome/fontawesometwo.enc}]
-(ATS_Resume.aux)
+{C:/Users/HARSH ASUS TUF-A15/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{
+C:/Users/HARSH ASUS TUF-A15/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fonta
+wesome/fontawesometwo.enc}] (ATS_Resume.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-10-09>
@@ -523,19 +573,20 @@ Package rerunfilecheck Info: File `ATS_Resume.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 11114 strings out of 468080
- 171798 string characters out of 5427223
- 597072 words of memory out of 5000000
+ 11116 strings out of 468080
+ 173969 string characters out of 5419444
+ 596072 words of memory out of 5000000
  39691 multiletter control sequences out of 15000+600000
  629547 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,5n,93p,394b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/hp/AppData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome/Fon
-tAwesome.pfb><C:/Users/hp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmbx10.pfb><C:/Users/hp/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/cm/cmcsc10.pfb><C:/Users/hp/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/amsfonts/cm/cmr10.pfb>
-Output written on ATS_Resume.pdf (1 page, 68425 bytes).
+ 90i,5n,93p,393b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/HARSH ASUS TUF-A15/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/fontawesome/FontAwesome.pfb><C:/Users/HARSH ASUS TUF-A15/AppData/Local/Program
+s/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/HARSH ASUS TUF-A15
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/U
+sers/HARSH ASUS TUF-A15/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
+ts/cm/cmr10.pfb>
+Output written on ATS_Resume.pdf (1 page, 68792 bytes).
 PDF statistics:
  32 PDF objects out of 1000 (max. 8388607)
  2 named destinations out of 1000 (max. 500000)

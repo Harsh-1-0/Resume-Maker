@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, use } from "react";
 import SnakeLoader from "./snakeLoader";
 
 export default function Home() {
@@ -18,6 +18,11 @@ export default function Home() {
   const [result2, setResult2] = useState(null);
 
   const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5MB
+
+
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   function handleFileSelection(e, setter, acceptTypes) {
     setError("");
@@ -53,7 +58,7 @@ export default function Home() {
       setLoading(true);
       const response = await axios.post(`${url}/process_pair/`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
-        timeout: 120000,
+        timeout: 240000,
       });
       const outputData = response.data ?? { message: "Success (no JSON body)" };
       setParseOutput(outputData);
@@ -87,6 +92,13 @@ export default function Home() {
           responseType: "blob", // because FastAPI returns a PDF
         }
       );
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result; // "data:application/pdf;base64,JVBERi0x..."
+        localStorage.setItem("enhanced_resume_blob", base64data);
+        console.log("✅ Resume stored in localStorage!");
+      };
+      reader.readAsDataURL(response3.data);
       localStorage.setItem("enhanced_resume_blob", response3.data);
       console.log("Resume Enhancement Response:", response3);
     } catch (err) {
