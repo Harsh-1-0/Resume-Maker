@@ -1,14 +1,30 @@
+# make_resume.py
 import subprocess
 import re
+import os
 from jinja2 import Template
 import ollama
-import os
 
-def generate_ats_resume(resume_data, jd_data, matched_json, output_pdf="ATS_Resume.pdf"):
-    """Generates an ATS-optimized PDF resume using Ollama and LaTeX."""
-    
+# NOTE: Ensure dependencies are installed:
+# pip install jinja2 ollama-python-client   (or whatever ollama client you use)
+# Also ensure `pdflatex` (TeX Live / MiKTeX) is installed and available in PATH.
+
+def generate_ats_resume(resume_data, jd_data, matched_json, output_pdf_name="ATS_Resume.pdf"):
+    """
+    Generate ATS-optimized PDF and .tex file in the same directory as this script.
+
+    Returns: absolute path to generated PDF on success, or None on failure.
+    """
+    agent_dir = os.path.dirname(os.path.abspath(__file__))  # directory of this script
+    tex_basename = os.path.splitext(output_pdf_name)[0] + ".tex"
+    tex_path = os.path.join(agent_dir, tex_basename)
+    pdf_path = os.path.join(agent_dir, output_pdf_name)
+
     # ====== LATEX CLEANERS ======
     def clean_for_latex(text):
+        if text is None:
+            return ""
+        text = str(text)
         replacements = {
             "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#",
             "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}",
@@ -17,168 +33,298 @@ def generate_ats_resume(resume_data, jd_data, matched_json, output_pdf="ATS_Resu
         }
         for k, v in replacements.items():
             text = text.replace(k, v)
-        return text
+        # collapse excessive whitespace
+        return re.sub(r'\s+', ' ', text).strip()
 
     def clean_llm_output(text):
+        if not text:
+            return ""
+        text = str(text)
+        # remove common markdown/bullets and helper phrases
         text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
         text = re.sub(r'\*(.*?)\*', r'\1', text)
         text = re.sub(r'`(.*?)`', r'\1', text)
-        text = re.sub(r"(?i)here.?s a rewritten.*?:", "", text)
-        text = re.sub(r"(?i)here.?s the optimized.*?:", "", text)
+        text = re.sub(r"(?i)here('?s| is) (a )?rewritten.*?:", "", text)
+        text = re.sub(r"(?i)here('?s| is) the optimized.*?:", "", text)
         text = re.sub(r"(?i)this rewritten.*", "", text)
         text = re.sub(r"(?i)note:.*", "", text)
         text = re.sub(r"(?i)i made the following changes.*", "", text, flags=re.DOTALL)
-        text = re.sub(r"(?i)key changes.*", "", text, flags=re.DOTALL)
-        text = re.split(r"(?i)(\n\s*\*|\n\s*-\s|Key points:|Key changes:)", text)[0]
+        # take first paragraph up to common separators to avoid long trailing notes
+        parts = re.split(r"(?i)(Key points:|Key changes:|\n\s*\*|\n\s*-\s)", text)
+        if parts:
+            text = parts[0]
         text = clean_for_latex(text)
-        text = re.sub(r'\s+', ' ', text).strip()
         return text
 
     def ats_optimize_section(section_name, text, job_desc):
-        prompt = f"""
-        You are an expert resume optimizer.
-        Rewrite the following {section_name} section to be:
-         - Highly ATS-friendly with strong action verbs and relevant keywords.
-         - Include quantifiable metrics (e.g., percentages, time reductions, user counts) if plausible.
-         - Keep it concise and professional.
-          Return *only* the rewritten professional text.
-        Do not include explanations, notes, bullet points, or reasons for your changes.
-        Do not include anything like this "Here is the rewritten Professional Summary section:" while generating.
-
         """
-        response = ollama.chat(
-            model="llama3",
-            messages=[{"role": "user", "content": prompt + "\n\n" + job_desc + "\n---\n" + text}]
-        )
-        return clean_llm_output(response["message"]["content"].strip())
+        Call to Ollama to rewrite a given section for ATS. Kept simple.
+        If Ollama fails, return the input `text` (cleaned).
+        """
+        try:
+            prompt = f"""
+You are an expert resume optimizer.
+Rewrite the following {section_name} section to be:
+ - Highly ATS-friendly with strong action verbs and relevant keywords.
+ - Include quantifiable metrics (if plausible).
+ - Keep it concise and professional.
+Return only the rewritten professional text (no explanations).
+Resume section:
+{text}
+
+Job / JD:
+{job_desc}
+"""
+            response = ollama.chat(
+                model="llama3",
+                messages=[{"role": "user", "content": prompt}],
+            )
+            content = None
+            if isinstance(response, dict):
+                # Ollama Python client tends to return dict with message.content
+                msg = response.get("message") or response.get("content")
+                if isinstance(msg, dict):
+                    content = msg.get("content")
+                elif isinstance(msg, str):
+                    content = msg
+            if content is None:
+                # fallback to str()
+                content = str(response)
+            return clean_llm_output(content)
+        except Exception as e:
+            # if LLM fails, return cleaned original text so generation continues
+            print("⚠️ Ollama ATS optimization failed:", e)
+            return clean_for_latex(text)
 
     # ====== JOB DESCRIPTION TEXT ======
-    jd_text = jd_data["job_summary"] + " " + " ".join(jd_data["required_skills"])
+    # Create an aggregated JD_text for LLM prompt
+    jd_text = ""
+    if isinstance(jd_data, dict):
+        job_summary = jd_data.get("job_summary", "") if jd_data.get("job_summary") else ""
+        req_skills = jd_data.get("required_skills", [])
+        if isinstance(req_skills, (list, tuple)):
+            jd_text = job_summary + " " + " ".join([str(s) for s in req_skills])
+        else:
+            jd_text = job_summary + " " + str(req_skills)
+    else:
+        jd_text = str(jd_data)
 
-    # ====== FILTER SECTIONS ======
-    filtered_skills = [
-        s for s in resume_data["skills"]["programming_languages"]
-        if any(skill.lower() in s.lower() for skill in matched_json["matched_required_skills"])
-    ] or resume_data["skills"]["programming_languages"]
+    # ====== FILTER SECTIONS (basic filters using matched_json) ======
+    filtered_skills = []
+    raw_prog = []
+    # resume_data may have skills in various shapes; try to collect programming languages list
+    try:
+        if isinstance(resume_data.get("skills"), dict):
+            raw_prog = resume_data["skills"].get("programming_languages", []) or []
+        else:
+            raw_prog = resume_data.get("skills") or []
+    except Exception:
+        raw_prog = []
 
-    filtered_projects = [
-        proj for proj in resume_data["projects"]
-        if proj["name"] in matched_json["projects_matches"]
-    ] or resume_data["projects"]
+    # if matched_required_skills provided, filter; else keep list
+    try:
+        matched_required = matched_json.get("matched_required_skills", []) or []
+    except Exception:
+        matched_required = []
 
-    filtered_certs = [
-        cert for cert in resume_data["certifications"]
-        if any(c.lower() in cert["name"].lower() or c.lower() in cert["description"].lower()
-               for c in matched_json["certifications_matches"])
-    ] or resume_data["certifications"]
+    if matched_required:
+        for s in raw_prog:
+            s_str = str(s)
+            if any(m.lower() in s_str.lower() for m in matched_required):
+                filtered_skills.append(s_str)
+        if not filtered_skills:
+            filtered_skills = [str(x) for x in raw_prog]
+    else:
+        filtered_skills = [str(x) for x in raw_prog]
 
-    # ====== OPTIMIZE SUMMARY ======
-    summary_text = ats_optimize_section(
-        "Professional Summary",
-        "Aspiring software engineer with experience in full-stack and machine learning projects, seeking to contribute to scalable software solutions.",
-        jd_text
-    )
+    # ====== FILTER PROJECTS ======
+    projects_list = resume_data.get("projects", []) or []
+    proj_matches = matched_json.get("projects_matches", {}) or {}
+    filtered_projects = []
+    if proj_matches:
+        # if projects_matches is a dict of projectname -> matches
+        for p in projects_list:
+            name = p.get("name") if isinstance(p, dict) else None
+            if name and name in proj_matches:
+                filtered_projects.append(p)
+    if not filtered_projects:
+        filtered_projects = projects_list
 
-    # ====== BUILD EXPERIENCE ======
+    # ====== FILTER CERTIFICATIONS ======
+    certs_list = resume_data.get("certifications", []) or []
+    cert_matches = matched_json.get("certifications_matches", []) or []
+    filtered_certs = []
+    if cert_matches:
+        for c in certs_list:
+            n = c.get("name", "") if isinstance(c, dict) else str(c)
+            d = c.get("description", "") if isinstance(c, dict) else ""
+            if any(m.lower() in (n + d).lower() for m in cert_matches):
+                filtered_certs.append(c)
+    if not filtered_certs:
+        filtered_certs = certs_list
+
+    # ====== OPTIMIZE SUMMARY (LLM) ======
+    try:
+        summary_seed = resume_data.get("summary") or "Aspiring software engineer with experience in full-stack and machine learning projects."
+        summary_text = ats_optimize_section("Professional Summary", summary_seed, jd_text)
+    except Exception:
+        summary_text = clean_for_latex(resume_data.get("summary") or "")
+
+    # ====== BUILD EXPERIENCE TEXT (LaTeX) ======
     exp_entries = []
-    for exp in resume_data["experience"]:
-        exp_points = "\\\\\n".join([f"-- {clean_for_latex(r)}" for r in exp["responsibilities"]])
-        exp_entries.append(
-            f"\\textbf{{{clean_for_latex(exp['role'])}}} at {clean_for_latex(exp['company'])} "
-            f"\\hfill ({exp['start_date']} -- {exp['end_date']})\\\\\n{exp_points}\n"
-        )
+    for exp in resume_data.get("experience", []) or []:
+        company = clean_for_latex(exp.get("company") or "")
+        role = clean_for_latex(exp.get("role") or "")
+        start_date = exp.get("start_date") or ""
+        end_date = exp.get("end_date") or ""
+        # responsibilities to latex lines
+        resp_items = exp.get("responsibilities") or []
+        if isinstance(resp_items, str):
+            resp_items = [resp_items]
+        resp_lines = [clean_for_latex(r) for r in resp_items if r]
+        resp_text = "\\\\\n".join([f"-- {r}" for r in resp_lines]) if resp_lines else ""
+        entry = f"\\textbf{{{role}}} at {company} \\hfill ({start_date} -- {end_date})\\\\\n{resp_text}"
+        exp_entries.append(entry)
     exp_text = "\n\n".join(exp_entries)
 
-    # ====== BUILD PROJECTS ======
-    projects_text = "\\\\[4pt]\n".join([
-        f"\\textbf{{{clean_for_latex(proj['name'])}}}: {clean_for_latex(proj['description'])}"
-        for proj in filtered_projects
-    ])
+    # ====== BUILD PROJECTS TEXT ======
+    projects_text_items = []
+    for proj in filtered_projects:
+        pname = clean_for_latex(proj.get("name") if isinstance(proj, dict) else str(proj))
+        pdesc = ""
+        if isinstance(proj, dict):
+            pdesc = proj.get("description") or proj.get("desc") or ""
+        pdesc = clean_for_latex(pdesc)
+        if pname:
+            projects_text_items.append(f"\\textbf{{{pname}}}: {pdesc}")
+    projects_text = "\\\\[4pt]\n".join(projects_text_items)
 
-    # ====== BUILD CERTIFICATIONS ======
-    certifications_text = "\n".join([
-        f"\\textbf{{{clean_for_latex(cert['name'])}}}: {clean_for_latex(cert['description'])}\\\\"
-        for cert in filtered_certs
-    ])
+    # ====== BUILD CERTIFICATIONS TEXT ======
+    certifications_text_items = []
+    for cert in filtered_certs:
+        if isinstance(cert, dict):
+            cname = clean_for_latex(cert.get("name") or "")
+            cdesc = clean_for_latex(cert.get("description") or "")
+        else:
+            cname = clean_for_latex(str(cert))
+            cdesc = ""
+        certifications_text_items.append(f"\\textbf{{{cname}}}: {cdesc}\\\\")
+    certifications_text = "\n".join(certifications_text_items)
+
+    # ====== SKILLS LIST (flatten) ======
+    # filtered_skills already a list of strings
+    skills_for_tex = [clean_for_latex(s) for s in filtered_skills]
 
     # ====== LATEX TEMPLATE ======
     latex_template = r"""
-    \documentclass{resume}
+\documentclass{article}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{fontawesome5}
+\usepackage{parskip}
+\usepackage{hyperref}
+\begin{document}
 
-    \name{ {{ name }} }
+\begin{center}
+    {\LARGE \textbf{ {{ name }} }}\\[4pt]
+    \href{mailto:{{ contact.email }}}{{ contact.email }} \quad | \quad {{ contact.phone }}
+\end{center}
 
-    \contact{
-        \faEnvelope\ {{ contact.email }} \quad | \quad
-        \faPhone\ {{ contact.phone }}
-    }
+\section*{Summary}
+{{ summary }}
 
-    \begin{document}
+\section*{Education}
+{% for edu in education %}
+\textbf{ {{ edu.institution }} } \hfill {{ edu.degree }}\\
+CGPA / Percentage: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }}\\[6pt]
+{% endfor %}
 
-    \begin{rSection}{Summary}
-    {{ summary }}
-    \end{rSection}
+\section*{Experience}
+{{ experience }}
 
-    \begin{rSection}{Education}
-    {% for edu in education %}
-    \textbf{ {{ edu.institution }} } \hfill {{ edu.degree }}\\
-    CGPA / Percentage: {{ edu.cgpa if edu.cgpa != "null" else edu.percentage }}\\[6pt]
-    {% endfor %}
-    \end{rSection}
+\section*{Projects}
+{{ projects }}
 
-    \begin{rSection}{Experience}
-    {{ experience }}
-    \end{rSection}
+\section*{Skills}
+{% for s in skills %}
+{{ s }}\\
+{% endfor %}
 
-    \begin{rSection}{Projects}
-    {{ projects }}
-    \end{rSection}
+\section*{Certifications}
+{{ certifications }}
 
-    \begin{rSection}{Skills}
-    {% for s in skills %}
-    {{ s | replace('%', '\%') | replace('&', '\&') }}\\
-    {% endfor %}
-    \end{rSection}
+\end{document}
+"""
 
-    \begin{rSection}{Certifications}
-    {{ certifications }}
-    \end{rSection}
-
-    \end{document}
-    """
-
-    # ====== RENDER LATEX ======
+    # Render Jinja template
     rendered_resume = Template(latex_template).render(
-        name=resume_data["name"],
-        contact=resume_data["contact"],
-        education=resume_data["education"],
+        name=resume_data.get("name", ""),
+        contact=resume_data.get("contact", {}),
+        education=resume_data.get("education", []),
         experience=exp_text,
         projects=projects_text,
-        skills=filtered_skills,
+        skills=skills_for_tex,
         certifications=certifications_text,
         summary=summary_text
     )
 
-    # ====== SAVE AND COMPILE ======
-    tex_path = "ATS_Resume.tex"
-    with open(tex_path, "w", encoding="utf-8") as f:
-        f.write(rendered_resume)
-
-    print("✅ LaTeX file generated successfully!")
-
+    # ====== SAVE TEX FILE ======
     try:
-        subprocess.run(["pdflatex", "-interaction=nonstopmode", tex_path], check=True)
-        subprocess.run(["pdflatex", "-interaction=nonstopmode", tex_path], check=True)
-        print(f"🎉 PDF generated successfully: {output_pdf}")
-    except subprocess.CalledProcessError:
-        print("❌ Error while generating PDF.")
+        with open(tex_path, "w", encoding="utf-8") as f:
+            f.write(rendered_resume)
+        print("✅ LaTeX .tex file written to:", tex_path)
+    except Exception as e:
+        print("❌ Failed to write .tex file:", e)
         return None
 
-    return os.path.abspath(output_pdf)
+    # ====== CHECK pdflatex availability ======
+    try:
+        subprocess.run(["pdflatex", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    except Exception:
+        print("❌ 'pdflatex' not found in PATH. Please install TeX (TeX Live or MiKTeX) and ensure 'pdflatex' is available.")
+        return None
 
-resume_data = { "name": "Shubham Kumar", "contact": { "email": "shubhamkr77555@gmail.com", "phone": "+91 7257912483" }, "education": [ {"institution": "Vellore Institute of Technology", "degree": "B.Tech in Computer Science and Engineering", "cgpa": 8.8, "percentage": "null"}, {"institution": "Delhi Public School", "degree": "Senior Secondary Education (CBSE)", "cgpa": "null", "percentage": 93.6}, {"institution": "Delhi Public School", "degree": "High School Education (CBSE)", "cgpa": "null", "percentage": 95.6} ], "skills": { "programming_languages": [ "Programming Languages: C++, Python, Java", "Web Development: HTML, CSS, JavaScript, React.js, Node.js, Express.js, REST APIs", "Databases: MongoDB, SQL", "Machine Learning: Pandas, NumPy, Matplotlib, Scikit-learn, TensorFlow, Keras", "Tools & Platforms: GitHub, Postman, Vercel, Render" ] }, "experience": [ { "company": "Just Logic Software Pvt. Ltd.", "role": "Full Stack Developer Intern", "start_date": "May 2025", "end_date": "July 2025", "responsibilities": [ "Developed 3+ production-ready modules (React.js, Node.js, REST APIs), deployed to live users.", "Optimized MongoDB queries, reducing data retrieval time by 30%.", "Collaborated in a 6-member Agile team, delivering 5+ full-stack features within sprint deadlines." ] } ], "projects": [ { "name": "AutismScope", "description": "Implemented a full-stack web app for Autism Spectrum Disorder prediction using React.js and Flask, delivering real-time results under 1 second." }, { "name": "Nexus", "description": "Built a student-centric platform during a 48-hour hackathon that reconnects lost belongings using C++ backend logic." } ], "certifications": [ { "name": "Complete A.I. & Machine Learning, Data Science Bootcamp (Udemy)", "description": "Completed a 44-hour bootcamp on AI, Machine Learning, and Data Science, led by Andrei Neagoie and Daniel Bourke." }, { "name": "Data Structures & Algorithms Mastery", "description": "Achieved LeetCode Contest Rating of 1750 (Top 9% globally) and solved 600+ problems." } ] } 
-jd_data = { "required_skills": [ "C++", "SQL", "HTML/DHTML", "CSS", "Javascript", "Service Oriented Architecture", "Object-Oriented Programming" ], "job_summary": "Associate Developer role at Sapiens, focusing on software development and Agile/Scrum collaboration." } # ====== HARD-CODED MATCHED SKILLS ====== 
-matched_json = { 'matched_required_skills': ['SQL', 'HTML/DHTML', 'CSS', 'JavaScript', 'Data Structures', 'Algorithms'], 'projects_matches': {'Nexus': ['HTML/DHTML', 'CSS', 'JavaScript']}, 'certifications_matches': [] }
+    # ====== COMPILE TEX -> PDF (run twice for references) ======
+    # run in agent_dir to keep all aux files local
+    try:
+        subprocess.run(["pdflatex", "-interaction=nonstopmode", tex_basename], cwd=agent_dir, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["pdflatex", "-interaction=nonstopmode", tex_basename], cwd=agent_dir, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError as e:
+        print("❌ Error while running pdflatex:", e)
+        return None
+
+    if os.path.exists(pdf_path):
+        print("🎉 PDF generated successfully:", pdf_path)
+        return pdf_path
+    else:
+        # pdf name may be basename with .pdf in same dir
+        alt_pdf = os.path.join(agent_dir, tex_basename.replace(".tex", ".pdf"))
+        if os.path.exists(alt_pdf):
+            print("🎉 PDF generated (alternate name):", alt_pdf)
+            return alt_pdf
+        print("❌ PDF file not found after pdflatex run.")
+        return None
 
 
-pdf_path = generate_ats_resume(resume_data, jd_data, matched_json)
-print("✅ Final resume saved at:", pdf_path)
+# If run directly, produce a sample PDF using embedded sample data
+if __name__ == "__main__":
+    # small sample data (you already provided similar)
+    resume_data = {
+        "name": "Shubham Kumar",
+        "contact": {"email": "shubhamkr77555@gmail.com", "phone": "+91 7257912783"},
+        "education": [
+            {"institution": "Vellore Institue of Technology", "degree": "BTech. in Computer Science Engineering", "cgpa": 8.8, "percentage": "null"},
+            {"institution": "Delhi Public School Patna, Bihar", "degree": "Senior Secondary Education (CBSE)", "cgpa": "null", "percentage": 93.6},
+        ],
+        "skills": {"programming_languages": ["C++", "Python", "Java"]},
+        "experience": [
+            {"company": "Just Logic Software Pvt. Ltd.", "role": "Full Stack Developer Intern", "start_date": "May 2025", "end_date": "July 2025",
+             "responsibilities": ["Developed 3+ production-ready modules (React.js, Node.js, REST APIs).", "Optimized MongoDB queries."]},
+        ],
+        "projects": [{"name": "AutismScope", "description": "Implemented a full-stack web app."}],
+        "certifications": [{"name": "Complete A.I. & Machine Learning, Data Science Bootcamp (Udemy)", "description": "44-hour bootcamp."}]
+    }
+    jd_data = {"required_skills": ["C++", "SQL"], "job_summary": "Associate Developer role focusing on software development."}
+    matched_json = {"matched_required_skills": ["C++"], "projects_matches": {"AutismScope": []}, "certifications_matches": []}
+
+    path = generate_ats_resume(resume_data, jd_data, matched_json, output_pdf_name="ATS_Resume.pdf")
+    print("Output path:", path)
