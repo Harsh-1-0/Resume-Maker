@@ -70,6 +70,61 @@
 // }
 
 
+// import React, { useState } from "react";
+// import Home from "./components/Home2";
+// import ResumeDownload from "./components/ResumeDownload";
+// import SkillGap from "./components/SkillGap";
+// import JobSearch from "./components/JobSearch";
+
+// export default function App() {
+//   const [page, setPage] = useState("home");
+
+//   const NavButton = ({ name, label }) => (
+//     <button
+//       onClick={() => setPage(name)}
+//       className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+//         page === name
+//           ? "bg-blue-600 text-white shadow-sm"
+//           : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+//       }`}
+//     >
+//       {label}
+//     </button>
+//   );
+
+//   return (
+//     <div className="min-h-screen bg-[#f8f9fa] text-gray-900 font-sans">
+//       <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+//         <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
+//           <div className="text-xl font-semibold tracking-tight text-gray-800">
+//             Resume<span className="text-blue-600">MAKER</span>
+//           </div>
+//           <nav className="flex items-center gap-2">
+//             <NavButton name="home" label="Home" />
+//             <NavButton name="skillgap" label="Skill Gap" />
+//             <NavButton name="jobsearch" label="Job Search" />
+//             <NavButton name="resume" label="Resume" />
+//           </nav>
+//         </div>
+//       </header>
+
+//       <main className="max-w-6xl mx-auto px-4 py-10">
+//         {page === "home" && <Home onNavigate={setPage} />}
+//         {page === "resume" && <ResumeDownload onBack={() => setPage("home")} />}
+//         {page === "skillgap" && <SkillGap onBack={() => setPage("home")} />}
+//         {page === "jobsearch" && <JobSearch onBack={() => setPage("home")} />}
+//       </main>
+
+//       <footer className="mt-10 text-center text-sm text-gray-500 py-6 border-t border-gray-200">
+       
+//       </footer>
+//     </div>
+//   );
+// }
+
+
+
+
 import React, { useState } from "react";
 import Home from "./components/Home2";
 import ResumeDownload from "./components/ResumeDownload";
@@ -84,8 +139,8 @@ export default function App() {
       onClick={() => setPage(name)}
       className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
         page === name
-          ? "bg-blue-600 text-white shadow-sm"
-          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          ? "bg-white/8 text-white shadow"
+          : "text-white/60 hover:text-white hover:bg-white/4"
       }`}
     >
       {label}
@@ -93,13 +148,18 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-gray-900 font-sans">
-      <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
-          <div className="text-xl font-semibold tracking-tight text-gray-800">
-            Resume<span className="text-blue-600">MAKER</span>
+    <div className="min-h-screen">
+      <header className="py-6 border-b border-white/6">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {/* <div style={{ width: 42, height: 42, borderRadius: 10, background: "linear-gradient(135deg,#7c3aed,#3b82f6)" }} /> */}
+            <div>
+              <div className="heading text-xl  ">Resu<span style={{color:"#2fb6ff"}}>Mate</span></div>
+              <div className="kicker">Elegant • ATS optimizer • Skill gap & Job search</div>
+            </div>
           </div>
-          <nav className="flex items-center gap-2">
+
+          <nav className="flex items-center gap-3">
             <NavButton name="home" label="Home" />
             <NavButton name="skillgap" label="Skill Gap" />
             <NavButton name="jobsearch" label="Job Search" />
@@ -108,14 +168,14 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-6 py-10">
         {page === "home" && <Home onNavigate={setPage} />}
-        {page === "resume" && <ResumeDownload onBack={() => setPage("home")} />}
         {page === "skillgap" && <SkillGap onBack={() => setPage("home")} />}
         {page === "jobsearch" && <JobSearch onBack={() => setPage("home")} />}
+        {page === "resume" && <ResumeDownload onBack={() => setPage("home")} />}
       </main>
 
-      <footer className="mt-10 text-center text-sm text-gray-500 py-6 border-t border-gray-200">
+      <footer className="mt-12 text-center text-sm text-white/60 py-8">
        
       </footer>
     </div>
