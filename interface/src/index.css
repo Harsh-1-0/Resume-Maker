@@ -20,6 +20,7 @@ body {
   color: #e6eef8;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  background-attachment: fixed;
 }
 
 .container {

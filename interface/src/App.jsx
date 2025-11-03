@@ -154,8 +154,8 @@ export default function App() {
           <div className="flex items-center gap-4">
             {/* <div style={{ width: 42, height: 42, borderRadius: 10, background: "linear-gradient(135deg,#7c3aed,#3b82f6)" }} /> */}
             <div>
-              <div className="heading text-xl  ">Resu<span style={{color:"#2fb6ff"}}>Mate</span></div>
-              <div className="kicker">Elegant • ATS optimizer • Skill gap & Job search</div>
+              <div className="heading text-7xl  ">Resu<span style={{color:"#2fb6ff"}}>Mate</span></div>
+              <div className="kicker">  ATS optimizer • Skill gap & Job search</div>
             </div>
           </div>
 

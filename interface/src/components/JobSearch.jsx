@@ -85,17 +85,16 @@ export default function JobSearch({ onBack = () => {} }) {
     run();
   }, []);
 
-  if (loading) return <div className="glass p-6"><div className="kicker">Searching jobs…</div></div>;
-  if (error) return <div className="glass p-4 border border-red-600/20 text-red-200 rounded-md">{error}</div>;
+  if (loading) return <div className="animate-pulse bg-white/10 backdrop-blur-md rounded-xl h-40 w-full"></div>;
+  if (error) return <div className="bg-red-500/10 backdrop-blur-md border border-red-500/20 text-red-200 p-4 rounded-xl">{error}</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold">Job Recommendations</h1>
-          <div className="muted small">Click any card to open the job posting</div>
-        </div>
-        <button onClick={onBack} className="btn ghost">← Back</button>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent drop-shadow-sm">Job Recommendations</h1>
+        <button onClick={onBack} className="px-3 py-1 rounded bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white text-sm transition-all duration-300">
+          ← Back
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -105,11 +104,11 @@ export default function JobSearch({ onBack = () => {} }) {
             href={job.link || job.url || "#"}
             target="_blank"
             rel="noreferrer"
-            className="job-card"
+            className="p-5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 ease-out group"
           >
-            <div className="text-xl font-semibold">{job.title}</div>
-            <div className="muted small">{job.company || job.source || ""}</div>
-            <p className="muted small mt-3">{job.snippet || job.description}</p>
+            <div className="text-lg font-semibold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-300 mb-2">{job.title}</div>
+            <div className="text-sm text-gray-300 group-hover:text-white/70">{job.company || job.source}</div>
+            <p className="text-sm text-gray-400 mt-2 group-hover:text-white/60">{job.snippet || job.description}</p>
           </a>
         ))}
       </div>

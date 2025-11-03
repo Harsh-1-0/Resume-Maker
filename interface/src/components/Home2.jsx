@@ -259,23 +259,23 @@ export default function Home({ onNavigate }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="glass p-6">
-          <h2 className="text-xl font-semibold">Upload Resume</h2>
-          <p className="muted small mb-4">PDF only, max 10MB</p>
+        <div className="p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 ease-out group">
+          <h2 className="text-xl font-semibold text-white group-hover:text-white/90">Upload Resume</h2>
+          <p className="text-sm text-gray-300 mb-4">PDF only, max 10MB</p>
           <div className="flex gap-3 items-center">
             <button onClick={() => resumeInputRef.current.click()} className="btn">Choose Resume</button>
-            <div className="muted small">{resumeFile ? resumeFile.name : "No file selected"}</div>
+            <div className="text-sm text-gray-400">{resumeFile ? resumeFile.name : "No file selected"}</div>
           </div>
           <input ref={resumeInputRef} type="file" accept="application/pdf" className="hidden"
             onChange={(e) => handleFileSelection(e, setResumeFile, ["application/pdf"])} />
         </div>
 
-        <div className="glass p-6">
-          <h2 className="text-xl font-semibold">Upload Job Description</h2>
-          <p className="muted small mb-4">PDF or Text file</p>
+        <div className="p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 ease-out group">
+          <h2 className="text-xl font-semibold text-white group-hover:text-white/90">Upload Job Description</h2>
+          <p className="text-sm text-gray-300 mb-4">PDF or Text file</p>
           <div className="flex gap-3 items-center">
             <button onClick={() => jdInputRef.current.click()} className="btn">Choose JD</button>
-            <div className="muted small">{jdFile ? jdFile.name : "No file selected"}</div>
+            <div className="text-sm text-gray-400">{jdFile ? jdFile.name : "No file selected"}</div>
           </div>
           <input ref={jdInputRef} type="file" accept="application/pdf,text/plain" className="hidden"
             onChange={(e) => handleFileSelection(e, setJdFile, null)} />
@@ -313,9 +313,13 @@ export default function Home({ onNavigate }) {
             { title: "Skill Gap", desc: "See what to learn next", page: "skillgap" },
             { title: "Job Search", desc: "Find matching jobs", page: "jobsearch" },
           ].map((b) => (
-            <button key={b.page} onClick={() => onNavigate(b.page)} className="glass p-6 text-left rounded-xl">
-              <h3 className="text-lg font-semibold">{b.title}</h3>
-              <p className="muted small mt-1">{b.desc}</p>
+            <button 
+              key={b.page} 
+              onClick={() => onNavigate(b.page)} 
+              className="p-6 text-left rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 ease-out group"
+            >
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent group-hover:from-purple-200 group-hover:to-pink-200">{b.title}</h3>
+              <p className="text-sm text-gray-400 group-hover:text-gray-300 mt-1">{b.desc}</p>
             </button>
           ))}
         </div>

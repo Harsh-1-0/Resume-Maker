@@ -88,36 +88,41 @@ export default function SkillGap({ onBack = () => {} }) {
     run();
   }, []);
 
-  if (loading) return <div className="glass p-6"><div className="kicker">Loading recommended resources…</div></div>;
-  if (error) return <div className="glass p-4 border border-red-600/20 text-red-200 rounded-md">{error}</div>;
+  if (loading) return <div className="animate-pulse bg-white/10 backdrop-blur-md rounded-xl h-40 w-full"></div>;
+  if (error) return <div className="bg-red-500/10 backdrop-blur-md border border-red-500/20 text-red-200 p-4 rounded-xl">{error}</div>;
 
   const { web = {}, skills = [] } = data || {};
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold">Skill Gap Insights</h1>
-          <div className="muted small">Recommended courses and resources by skill</div>
-        </div>
-        <button onClick={onBack} className="btn ghost">← Back</button>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent drop-shadow-sm">Skill Gap Insights</h1>
+        <button onClick={onBack} className="px-3 py-1 rounded bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white text-sm transition-all duration-300">
+          ← Back
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {skills.map((s) => (
-          <div key={s} className="job-card">
-            <div className="text-lg font-semibold">{s}</div>
-            <div className="muted small mb-3">Top resources</div>
-
+          <div key={s} className="p-5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 ease-out group">
+            <div className="text-lg font-semibold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-300 mb-2">{s}</div>
             {(web[s] || []).slice(0, 3).map((item, i) => (
-              <a key={i} href={item.link} rel="noreferrer" target="_blank" className="block p-3 rounded-md border border-white/4 mb-2">
-                <div className="font-medium">{item.title}</div>
-                <p className="muted small mt-1">{item.snippet}</p>
+              <a
+                key={i}
+                href={item.link}
+                target="_blank"
+                rel="noreferrer"
+                className="block p-3 rounded-md bg-white/5 border border-white/10 hover:bg-white/15 hover:border-white/20 transition-all duration-300 mb-2 group/item"
+              >
+                <div className="font-medium text-white/90 group-hover/item:text-white">{item.title}</div>
+                <p className="text-sm text-gray-400 group-hover/item:text-gray-300 mt-1">{item.snippet}</p>
               </a>
             ))}
           </div>
         ))}
       </div>
+
+      <div className="muted small">Recommended courses and resources by skill</div>
     </div>
   );
 }
