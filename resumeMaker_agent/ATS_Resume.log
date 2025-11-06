@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.11.2)  4 NOV 2025 00:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.11.2)  4 NOV 2025 19:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -313,6 +313,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--27
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 30--31
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--40
+
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 41--42
 
  []
@@ -323,7 +333,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 43--44
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 47--48
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--51
 
  []
 
@@ -352,7 +367,7 @@ Here is how much of TeX's memory you used:
 onts/cm/cmbx10.pfb><C:/Users/Abhinav Harsh/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Abhinav Harsh/AppData/Local/Progr
 ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on ATS_Resume.pdf (1 page, 59120 bytes).
+Output written on ATS_Resume.pdf (1 page, 59935 bytes).
 PDF statistics:
  35 PDF objects out of 1000 (max. 8388607)
  8 named destinations out of 1000 (max. 500000)

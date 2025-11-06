@@ -76,7 +76,7 @@ export default function SkillGap({ onBack = () => {} }) {
         const raw = localStorage.getItem("skill_match_output");
         if (!raw) throw new Error("No skill_match_output in localStorage.");
         const payload = JSON.parse(raw);
-        const skills = payload.matched_required_skills || payload.skills || [];
+        const skills = payload.unmatched_required_skills || payload.skills || [];
         const resp = await axios.post("http://127.0.0.1:8000/skill_gap/", { skills });
         setData(resp.data);
       } catch (e) {
