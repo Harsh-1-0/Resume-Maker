@@ -16,18 +16,6 @@
 
 ---
 
-## 🧱 Tech Stack
-
-| Layer | Technologies |
-|-------|---------------|
-| **Frontend** | React.js, Tailwind CSS, Framer Motion |
-| **Backend** | Python, FastAPI, Uvicorn |
-| **AI/ML** | LLaMA3 (via Ollama), NLP for Resume & JD Analysis |
-| **Data Handling** | Pandas, JSON, LaTeX |
-| **Storage & Hosting** | AWS S3, Local FS |
-| **Build Tools** | Node.js, npm |
-
----
 
 
 ## 🧩 Setup & Installation
